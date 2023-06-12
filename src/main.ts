@@ -1,1 +1,9 @@
-export const helloWorld = () => 'Hello, world.'
+export { automatedValue } from './api/automatedValue'
+export type {
+  AutomatedValue,
+  AutomatedValueCallback,
+} from './api/automatedValue'
+export { computedValue } from './api/computedValue'
+export type { ComputedValue } from './api/computedValue'
+export { mutableValue as value } from './api/mutableValue'
+export type { MutableValue as ReactiveValue } from './api/mutableValue'
