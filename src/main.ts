@@ -5,5 +5,5 @@ export type {
 } from './api/automatedValue'
 export { computedValue } from './api/computedValue'
 export type { ComputedValue } from './api/computedValue'
-export { mutableValue as value } from './api/mutableValue'
+export { mutableValue } from './api/mutableValue'
 export type { MutableValue as ReactiveValue } from './api/mutableValue'

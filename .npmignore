@@ -1,0 +1,5 @@
+/scripts
+/src
+/babel.config.js
+/tsconfig.json
+/.gitignore
