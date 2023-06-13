@@ -16,7 +16,10 @@
   "types": "dist/main.d.ts",
   "scripts": {
     "test": "jest",
-    "build": "tsc --emitDeclarationOnly && node scripts/build.js"
+    "build": "tsc --emitDeclarationOnly && node scripts/build.js",
+    "preversion": "npm test",
+    "version": "npm run build",
+    "postversion": "git push && git push --tags"
   },
   "devDependencies": {
     "@babel/core": "^7.22.5",
