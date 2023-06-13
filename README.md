@@ -1,9 +1,52 @@
-# npm library package
+# @alinnert/reactive
 
-This is a very minimal project template for library code that can be deployed to npm. It's based on [esbuild](https://github.com/evanw/esbuild) and [TypeScript](https://github.com/microsoft/TypeScript).
+This is a library for reactive values.
 
-## Usage
+The implementation is based on `CustomEvent` and `EventTarget` which are available in the Browser and recent server runtimes like Node.js 19 and Deno.
 
-- Clone or fork this repository, or create a new repository using this as a template.
-- Build your code using `npm run build`.
-- You can deploy your package any way you want.
+The API is heavily inspired by [Recoil](https://github.com/facebookexperimental/Recoil) but this library is framework agnostic.
+
+## Examples
+
+### Mutable values
+
+``` ts
+const numberValue = mutableValue(1)
+
+console.log(numberValue.value)
+
+numberValue.onChange((numberVal) => {
+  console.log(numberVal)
+})
+```
+
+### Computed values
+
+``` ts
+const numberValue = mutableValue(1)
+const doubleValue = computedValue([numberValue], (num) => num * 2)
+
+console.log(doubleValue.value)
+
+doubleValue.onChange((doubleVal) => {
+  console.log(doubleVal)
+})
+```
+
+### Automated values
+
+``` ts
+const intervalValue = automatedValue((next) => {
+  let v = 0
+  
+  setInterval(() => {
+    next(i++)
+  }, 1000)
+})
+
+console.log(intervalValue.value)
+
+intervalValue.onChange((intervalVal) => {
+  console.log(intervalVal)
+})
+```
