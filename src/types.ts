@@ -2,7 +2,10 @@ import { AutomatedValue } from './api/automatedValue'
 import { ComputedValue } from './api/computedValue'
 import { MutableValue } from './api/mutableValue'
 
-export type ReactiveValueListener<T> = (newValue: T) => void
+export type ReactiveValueListener<T> = (
+  newValue: T,
+  api: { initialRun: boolean },
+) => void
 
 export type AnyReactiveValue<
   Sources extends unknown[],

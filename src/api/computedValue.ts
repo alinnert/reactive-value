@@ -1,46 +1,42 @@
-import { addEvent } from '../lib/addEvent'
 import { ReactiveSources, ReactiveValueListener } from '../types'
 
-export type ComputedValue<Result> = {
-  readonly value: Result
-  onChange: (listener: ReactiveValueListener<Result>) => void
-}
+export type ComputedValueComputeFn<Sources extends unknown[], T> = (
+  ...sources: Sources
+) => T
 
-/**
- * Creates a reactive computed value that notifies subscribers when its value
- * has changed.
- */
-export function computedValue<Sources extends unknown[], Result>(
-  sources: [...ReactiveSources<Sources>],
-  callback: (sources: [...Sources]) => Result,
-): ComputedValue<Result> {
-  const getValues = () => sources.map((source) => source.value) as Sources
-  const target = new EventTarget()
-  let value = callback(getValues())
+export class ComputedValue<Sources extends unknown[], T> {
+  #sources: [...ReactiveSources<Sources>]
+  #value: T
+  #target = new EventTarget()
 
-  for (const source of sources) {
-    source.onChange(() => {
-      const newValue = callback(getValues())
-      value = newValue
-      const changeEvent = new CustomEvent('change', {
-        detail: newValue,
+  constructor(
+    sources: [...ReactiveSources<Sources>],
+    computeFn: ComputedValueComputeFn<Sources, T>,
+  ) {
+    this.#sources = sources
+    this.#value = computeFn(...this.#sourcesValues)
+
+    for (const source of this.#sources) {
+      source.onChange(() => {
+        this.#value = computeFn(...this.#sourcesValues)
+        this.#target.dispatchEvent(new CustomEvent('change'))
       })
-      target.dispatchEvent(changeEvent)
-    })
+    }
   }
 
-  return {
-    get value() {
-      return value
-    },
+  get value() {
+    return this.#value
+  }
 
-    onChange(listener) {
-      addEvent(target, 'change', (event) => {
-        const customEvent = event as CustomEvent<Result>
-        listener(customEvent.detail)
-      })
+  get #sourcesValues(): Sources {
+    return this.#sources.map((s) => s.value) as Sources
+  }
 
-      listener(value)
-    },
+  onChange(listener: ReactiveValueListener<T>) {
+    this.#target.addEventListener('change', () => {
+      listener(this.#value, { initialRun: false })
+    })
+
+    listener(this.#value, { initialRun: true })
   }
 }

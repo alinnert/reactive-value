@@ -1,34 +1,23 @@
-import { automatedValue } from './automatedValue'
+import { AutomatedValue } from './automatedValue'
 
-describe('automated value', () => {
-  test('single value', () => {
-    const mockCallback = jest.fn()
-    const autoVal = automatedValue((next) => {
-      next(1)
+describe('AutomatedValue', () => {
+  test('basic functionality', () => {
+    const automated = new AutomatedValue<number>(({ next }) => {
+      next(10)
+      next(20)
+      setTimeout(() => {
+        next(30)
+      }, 200)
     })
-    autoVal.onChange(mockCallback)
+    const mockFn = jest.fn()
+    automated.onChange(mockFn)
 
-    expect(autoVal.value).toBe(1)
-    expect(mockCallback).toHaveBeenCalledTimes(1)
-    expect(mockCallback.mock.calls[0][0]).toBe(1)
+    expect(mockFn).toBeCalledTimes(3)
   })
 
-  test('multiple values', (done) => {
-    const mockCallback = jest.fn()
-    const autoVal = automatedValue((next) => {
-      next(1)
-      setTimeout(() => {
-        next(2)
-      }, 100)
-    })
-    autoVal.onChange(mockCallback)
+  test('no value', () => {
+    const automated = new AutomatedValue(() => { })
 
-    expect(mockCallback).toHaveBeenCalledTimes(1)
-    expect(mockCallback.mock.calls[0][0]).toBe(1)
-    setTimeout(() => {
-      expect(mockCallback).toHaveBeenCalledTimes(2)
-      expect(mockCallback.mock.calls[1][0]).toBe(2)
-      done()
-    }, 150);
+    expect(automated.value).toBeUndefined()
   })
 })

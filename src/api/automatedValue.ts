@@ -1,42 +1,37 @@
-import { addEvent } from '../lib/addEvent'
 import { ReactiveValueListener } from '../types'
 
-export type AutomatedValueCallback<T> = (
-  next: (nextValue: T) => void,
-) => void
+export type AutomatedValueCallback<T> = (api: {
+  next: (nextValue: T) => void
+}) => void
 
-export type AutomatedValue<T> = {
-  readonly value: T | null
-  onChange: (listener: ReactiveValueListener<T>) => void
-}
+export class AutomatedValue<T> {
+  #value!: T
+  #target = new EventTarget()
 
-export function automatedValue<T>(
-  callback: AutomatedValueCallback<T>,
-): AutomatedValue<T> {
-  const target = new EventTarget()
-  let value: T | null = null
-
-  function next(nextValue: T): void {
-    value = nextValue
-    const changeEvent = new CustomEvent('change', { detail: nextValue })
-    target.dispatchEvent(changeEvent)
+  constructor(callback: AutomatedValueCallback<T>) {
+    callback({
+      next: (nextValue: T) => {
+        this.#next(nextValue)
+      },
+    })
   }
 
-  callback(next)
+  get value() {
+    return this.#value
+  }
 
-  return {
-    get value() {
-      return value
-    },
+  #next(nextValue: T) {
+    this.#value = nextValue
+    const event = new CustomEvent('change', { detail: nextValue })
+    this.#target.dispatchEvent(event)
+  }
 
-    onChange(listener) {
-      addEvent(target, 'change', (event) => {
-        const customEvent = event as CustomEvent
-        listener(customEvent.detail)
-      })
+  onChange(listener: ReactiveValueListener<T>) {
+    this.#target.addEventListener('change', () => {
+      listener(this.#value, { initialRun: false })
+    })
 
-      if (value === null) return
-      listener(value)
-    },
+    if (this.#value === null) return
+    listener(this.#value, { initialRun: true })
   }
 }
