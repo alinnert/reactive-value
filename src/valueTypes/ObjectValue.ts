@@ -26,6 +26,10 @@ export class ObjectValue<T extends {}> implements BaseReactiveValue<T> {
     this.set({ ...this.#value, ...value })
   }
 
+  updateValue<P extends keyof T>(property: P, updateFn: (value: T[P]) => T[P]) {
+    this.setValue(property, updateFn(this.#value[property]))
+  }
+
   getValue<P extends keyof T>(property: P): T[P] {
     return this.#value[property]
   }
