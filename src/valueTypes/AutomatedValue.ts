@@ -1,10 +1,11 @@
 import { ReactiveValueListener } from '../types'
+import { BaseReactiveValue } from './BaseReactiveValue'
 
 export type AutomatedValueCallback<T> = (api: {
   next: (nextValue: T) => void
 }) => void
 
-export class AutomatedValue<T> {
+export class AutomatedValue<T> implements BaseReactiveValue<T> {
   #value!: T
   #target = new EventTarget()
 

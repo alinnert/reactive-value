@@ -4,7 +4,7 @@ describe('SignalValue', () => {
   test('basic functionality', () => {
     const signal = new SignalValue()
     const mockFn = jest.fn()
-    signal.onSend(mockFn)
+    signal.onChange(mockFn)
 
     expect(mockFn).toBeCalledTimes(1)
     expect(typeof mockFn.mock.calls[0][0]).toBe('symbol')

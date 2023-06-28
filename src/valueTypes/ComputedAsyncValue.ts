@@ -1,4 +1,5 @@
 import { ReactiveSources, ReactiveValueListener } from '../types'
+import { BaseReactiveValue } from './BaseReactiveValue'
 
 export type ComputedAsyncValueComputeFn<Sources extends unknown[], T> = (
   ...sources: Sources
@@ -13,7 +14,9 @@ export type ComputedAsyncValueResultValue<T> =
 export type ComputedAsyncValueStatus =
   ComputedAsyncValueResultValue<unknown>['status']
 
-export class ComputedAsyncValue<Sources extends unknown[], T> {
+export class ComputedAsyncValue<Sources extends unknown[], T>
+  implements BaseReactiveValue<ComputedAsyncValueResultValue<T>>
+{
   #sources: [...ReactiveSources<Sources>]
   #computeFn: ComputedAsyncValueComputeFn<Sources, T>
   #status: ComputedAsyncValueStatus = 'initial'

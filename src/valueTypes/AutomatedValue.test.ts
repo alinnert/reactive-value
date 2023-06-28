@@ -1,4 +1,4 @@
-import { AutomatedValue } from './automatedValue'
+import { AutomatedValue } from './AutomatedValue'
 
 describe('AutomatedValue', () => {
   test('basic functionality', () => {

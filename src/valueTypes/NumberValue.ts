@@ -1,6 +1,7 @@
 import { ReactiveValueListener } from '../types'
+import { BaseReactiveValue } from './BaseReactiveValue'
 
-export class NumberValue {
+export class NumberValue implements BaseReactiveValue<number> {
   #value: number
   #initialValue: number
   #target = new EventTarget()

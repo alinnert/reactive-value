@@ -1,6 +1,7 @@
 import { ReactiveValueListener } from '../types'
+import { BaseReactiveValue } from './BaseReactiveValue'
 
-export class SignalValue {
+export class SignalValue implements BaseReactiveValue<Symbol> {
   #value = Symbol()
   #target = new EventTarget()
 
@@ -15,7 +16,7 @@ export class SignalValue {
     this.#target.dispatchEvent(event)
   }
 
-  onSend(listener: ReactiveValueListener<Symbol>) {
+  onChange(listener: ReactiveValueListener<Symbol>) {
     this.#target.addEventListener('change', () => {
       listener(this.#value, { initialRun: false })
     })

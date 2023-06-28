@@ -1,10 +1,13 @@
 import { ReactiveSources, ReactiveValueListener } from '../types'
+import { BaseReactiveValue } from './BaseReactiveValue'
 
 export type ComputedValueComputeFn<Sources extends unknown[], T> = (
   ...sources: Sources
 ) => T
 
-export class ComputedValue<Sources extends unknown[], T> {
+export class ComputedValue<Sources extends unknown[], T>
+  implements BaseReactiveValue<T>
+{
   #sources: [...ReactiveSources<Sources>]
   #value: T
   #target = new EventTarget()
