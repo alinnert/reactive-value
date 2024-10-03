@@ -11,11 +11,11 @@ The API is heavily inspired by [Recoil](https://github.com/facebookexperimental/
 ### Mutable values
 
 ``` ts
-const numberValue = mutableValue(1)
+const counter$ = mutableValue(1)
 
-console.log(numberValue.value)
+console.log(counter$.value)
 
-numberValue.onChange((numberVal) => {
+counter$.onChange((numberVal) => {
   console.log(numberVal)
 })
 ```
@@ -23,30 +23,30 @@ numberValue.onChange((numberVal) => {
 ### Computed values
 
 ``` ts
-const numberValue = mutableValue(1)
-const doubleValue = computedValue([numberValue], (num) => num * 2)
+const counter$ = mutableValue(1)
+const doubleCounter$ = computedValue([counter$], (num) => num * 2)
 
-console.log(doubleValue.value)
+console.log(doubleCounter$.value)
 
-doubleValue.onChange((doubleVal) => {
-  console.log(doubleVal)
+doubleCounter$.onChange((doubleCounterValue) => {
+  console.log(doubleCounterValue)
 })
 ```
 
 ### Automated values
 
 ``` ts
-const intervalValue = automatedValue((next) => {
-  let v = 0
+const interval$ = automatedValue((next) => {
+  let val = 0
   
   setInterval(() => {
-    next(i++)
+    next(val++)
   }, 1000)
 })
 
-console.log(intervalValue.value)
+console.log(interval$.value)
 
-intervalValue.onChange((intervalVal) => {
-  console.log(intervalVal)
+interval$.onChange((intervalValue) => {
+  console.log(intervalValue)
 })
 ```
